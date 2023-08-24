@@ -883,4 +883,44 @@ describe('preserveKeywords', () => {
       connections: null,
     });
   });
+
+  it('should preserve keywords within `emailProvider.credentials`', () => {
+    const preservedAssets = preserveKeywords({
+      localAssets: {
+        emailProvider: {
+          name: 'sendgrid',
+
+          credentials: {
+            api_key: '##EMAIL_PROVIDER_API_KEY##',
+          },
+        },
+      },
+      remoteAssets: {
+        emailProvider: {
+          name: 'sendgrid',
+          credentials: {},
+        },
+      },
+      keywordMappings: {
+        EMAIL_PROVIDER_API_KEY: 'apikey',
+      },
+      auth0Handlers: [
+        {
+          id: 'id',
+          identifiers: ['id', 'name'],
+          type: 'emailProvider',
+        },
+      ],
+    });
+
+    expect(preservedAssets).to.deep.equal({
+      emailProvider: {
+        name: 'sendgrid',
+
+        credentials: {
+          api_key: '##EMAIL_PROVIDER_API_KEY##',
+        },
+      },
+    });
+  });
 });
